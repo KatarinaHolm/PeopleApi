@@ -6,13 +6,9 @@
 
         public string Url { get; set; }
 
-        public int PersonId_FK { get; set; }
+        public int PersonInterestId_FK { get; set; }
 
-        public Person Person { get; set; }
-
-        public int InterestId_FK { get; set; }
-
-        public Interest Interest { get; set; }
+        public PersonInterest PersonInterest { get; set; }
 
     }
 }

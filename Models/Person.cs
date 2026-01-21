@@ -3,11 +3,10 @@
     public class Person
     {
         public int Id { get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
 
-        public string phoneNr { get; set; }
-
-        public List<Link> Links { get; set; }
+        public string PhoneNr { get; set; }
+        
     }
 }

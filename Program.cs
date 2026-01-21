@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using PeopleApi.Data;
+using Scalar.AspNetCore;
 
 namespace PeopleApi
 {
@@ -16,9 +17,12 @@ namespace PeopleApi
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            // !!!!!!!!!!! Data seeding!!!
+
             builder.Services.AddDbContext<PeopleApiDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+
             });
 
             var app = builder.Build();
@@ -27,6 +31,7 @@ namespace PeopleApi
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference();
             }
 
             app.UseHttpsRedirection();
