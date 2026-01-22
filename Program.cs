@@ -1,8 +1,11 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PeopleApi.Data;
 using PeopleApi.DTOs;
+using PeopleApi.Models;
 using Scalar.AspNetCore;
+using System;
 
 namespace PeopleApi
 {
@@ -37,14 +40,21 @@ namespace PeopleApi
 
             app.UseAuthorization();  
             
+            //Get all persons
             app.MapGet("/persons", async (PeopleApiDbContext context) =>
             {
-                var persons = await context.Persons.ToListAsync();
+                var Persons = await context.Persons.ToListAsync();
 
-                return Results.Ok(persons);
+                if (!Persons.Any())
+                {
+                    return Results.NotFound();
+                }
+
+                return Results.Ok(Persons);
 
             });
-            // Blir fel när API:et kallas
+
+            // It gets wrong when running it, makes circular reference.
             //app.MapGet("/interests/{id}", async (PeopleApiDbContext context, int id) =>
             //{
             //    var person = await context.Persons
@@ -59,9 +69,10 @@ namespace PeopleApi
             //    return Results.Ok(interests);
             //});
 
+            //Get all interests for a specific person
             app.MapGet("/persons/{id}/interests", async (PeopleApiDbContext context, int id) =>
             {
-                var personInterests = await context.PersonsInterests
+                var PersonInterests = await context.PersonsInterests
                     .Where(pi => pi.PersonId == id)
                     .Select(pi => new InterestDto
                     {
@@ -69,9 +80,87 @@ namespace PeopleApi
                         Title = pi.Interest.Title,
                         Description = pi.Interest.Description
                     })
-                    .ToListAsync();                  
+                    .ToListAsync();
 
-                return Results.Ok(personInterests);
+                if (!PersonInterests.Any())
+                {
+                    return Results.NotFound();
+                }
+
+                return Results.Ok(PersonInterests);
+            });
+
+            //Get all links for a specific person
+            app.MapGet("/persons/{id}/links", async (PeopleApiDbContext context, int id) =>
+            {
+                var PersonLinks = await context.PersonsInterests
+                    .Where(pi => pi.PersonId == id)
+                    .SelectMany(pi => pi.Links.Select(l => l.Url))
+                    .ToListAsync();
+
+                if (!PersonLinks.Any())
+                {
+                    return Results.NotFound();
+                }
+
+                return Results.Ok(PersonLinks);
+            });
+
+
+            //Connect a person to a new interest
+            app.MapPost("/persons/{personId}/interests/{interestId}", async (PeopleApiDbContext context, int personId, int interestId) =>
+            {
+                var person = await context.Persons.FirstOrDefaultAsync(p => p.Id == personId);
+
+                var interest = await context.Interests.FirstOrDefaultAsync(i => i.Id == interestId);
+
+                if (person == null || interest == null )
+                {
+                    return Results.NotFound("Person eller intresse saknas.");
+                }
+
+                var personInterest = await context.PersonsInterests
+                    .FirstOrDefaultAsync(pi => pi.PersonId == personId && pi.InterestId == interestId);
+
+                if (personInterest != null)
+                {
+                    return Results.Conflict();
+                }
+
+                var newPersonInterest = new PersonInterest
+                {
+                    PersonId = personId,
+                    InterestId = interestId
+                };
+
+                context.PersonsInterests.Add(newPersonInterest);
+                await context.SaveChangesAsync();
+
+                return Results.Created($"/persons/{personId}/interests/{interestId}", newPersonInterest);
+            });
+
+
+            //Add new links to a specific person and a specific interest
+            app.MapPost("/persons/{personId}/interests/{interestId}/links", async (PeopleApiDbContext context, int personId, int interestId, LinkDto dto) =>
+            {
+                var personInterest = await context.PersonsInterests
+                    .FirstOrDefaultAsync(pi => pi.PersonId == personId && pi.InterestId == interestId);
+
+                if (personInterest == null)
+                {
+                    return Results.NotFound("Person eller intresse saknas.");
+                }
+
+                var link = new Link
+                {
+                    Url = dto.Url,
+                    PersonInterestId = personInterest.Id
+                };
+
+                context.Links.Add(link);
+                await context.SaveChangesAsync();
+
+                Results.Created($"/persons/{personId}/interests/{interestId}/links", link);
             });
 
             app.Run();
