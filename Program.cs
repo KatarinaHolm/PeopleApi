@@ -34,7 +34,15 @@ namespace PeopleApi
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();                        
+            app.UseAuthorization();  
+            
+            app.MapGet("/persons", async (PeopleApiDbContext context) =>
+            {
+                var persons = await context.Persons.ToListAsync();
+
+                return Results.Ok(persons);
+
+            });
 
             app.Run();
         }
