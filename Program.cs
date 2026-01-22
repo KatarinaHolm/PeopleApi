@@ -17,8 +17,6 @@ namespace PeopleApi
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            // !!!!!!!!!!! Data seeding!!!
-
             builder.Services.AddDbContext<PeopleApiDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

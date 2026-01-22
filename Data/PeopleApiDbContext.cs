@@ -83,55 +83,128 @@ namespace PeopleApi.Data
 
                 );
 
-                modelBuilder.Entity<PersonInterest>().HasData(
-                    new PersonInterest
-                    {
-                        Id = 1,
-                        PersonId_FK = 1,
-                        InterestId_FK = 1
-                    },          
+            modelBuilder.Entity<PersonInterest>().HasData(
+                new PersonInterest
+                {
+                    Id = 1,
+                    PersonId = 1,
+                    InterestId = 1
+                },          
                    
-                    new PersonInterest
-                    {
-                        Id = 2,
-                        PersonId_FK = 1,
-                        InterestId_FK = 2
-                    },
+                new PersonInterest
+                {
+                    Id = 2,
+                    PersonId = 1,
+                    InterestId = 2
+                },
 
-                    new PersonInterest
-                    {
-                        Id = 3,
-                        PersonId_FK = 2,
-                        InterestId_FK = 3
-                    },
+                new PersonInterest
+                {
+                    Id = 3,
+                    PersonId = 2,
+                    InterestId = 3
+                },
 
-                     new PersonInterest
-                     {
-                         Id = 4,
-                         PersonId_FK = 2,
-                         InterestId_FK = 1
-                     },
+                new PersonInterest
+                {
+                    Id = 4,
+                    PersonId = 2,
+                    InterestId = 1
+                },
 
-                    new PersonInterest
-                    {
-                        Id = 5,
-                        PersonId_FK = 3,
-                        InterestId_FK = 4
-                    },
+                new PersonInterest
+                {
+                    Id = 5,
+                    PersonId = 3,
+                    InterestId = 4
+                },
 
-                     new PersonInterest
-                     {
-                         Id = 6,
-                         PersonId_FK = 3,
-                         InterestId_FK = 3
-                     }
-                    );
+                new PersonInterest
+                {
+                    Id = 6,
+                    PersonId = 3,
+                    InterestId = 3
+                }
+                );
 
             modelBuilder.Entity<Link>().HasData(
                 new Link
                 {
+                    Id = 1,
 
+                    Url = "https://www.svenskakyrkan.se/sofia/sofia-nova",
+
+                    PersonInterestId = 1
+                },
+
+                new Link
+                {
+                    Id = 2,
+
+                    Url = "https://www.sverigeskorforbund.se/",
+
+                    PersonInterestId = 1
+
+                },
+
+                new Link
+                {
+                    Id = 3,
+
+                    Url = "https://www.sats.se/",
+
+                    PersonInterestId = 2
+
+                },
+
+                new Link
+                {
+                    Id = 4,
+
+                    Url = "https://chasacademy.se/",
+
+                    PersonInterestId = 3
+
+                },
+
+                new Link
+                {
+                    Id = 5,
+
+                    Url = "https://hjkk.se/",
+
+                    PersonInterestId = 4
+
+                },
+
+                new Link
+                {
+                    Id = 6,
+
+                    Url = "https://www.koket.se/",
+
+                    PersonInterestId = 5
+
+                },
+
+                new Link
+                {
+                    Id = 7,
+
+                    Url = "https://csharpskolan.se/",
+
+                    PersonInterestId = 6
+
+                },
+                new Link
+                {
+                    Id = 8,
+
+                    Url = "https://learn.microsoft.com/en-us/dotnet/csharp/",
+
+                    PersonInterestId = 6
                 }
+
                 );
         }
     }

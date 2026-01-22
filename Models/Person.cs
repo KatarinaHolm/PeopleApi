@@ -7,6 +7,8 @@
         public string LastName { get; set; }
 
         public string PhoneNr { get; set; }
-        
+
+        public ICollection<PersonInterest> PersonInterests { get; set; } = new List<PersonInterest>();
+
     }
 }

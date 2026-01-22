@@ -6,7 +6,7 @@
 
         public string Url { get; set; }
 
-        public int PersonInterestId_FK { get; set; }
+        public int PersonInterestId { get; set; }
 
         public PersonInterest PersonInterest { get; set; }
 
