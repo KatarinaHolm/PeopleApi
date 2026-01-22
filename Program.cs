@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using PeopleApi.Data;
+using PeopleApi.DTOs;
 using Scalar.AspNetCore;
 
 namespace PeopleApi
@@ -42,6 +43,35 @@ namespace PeopleApi
 
                 return Results.Ok(persons);
 
+            });
+            // Blir fel när API:et kallas
+            //app.MapGet("/interests/{id}", async (PeopleApiDbContext context, int id) =>
+            //{
+            //    var person = await context.Persons
+            //        .Include(p => p.PersonInterests)
+            //        .ThenInclude(pi => pi.Interest)
+            //        .FirstOrDefaultAsync(p => p.Id == id);
+
+            //    var interests = person.PersonInterests
+            //        .Select(pi => pi.Interest)
+            //        .ToList();
+
+            //    return Results.Ok(interests);
+            //});
+
+            app.MapGet("/persons/{id}/interests", async (PeopleApiDbContext context, int id) =>
+            {
+                var personInterests = await context.PersonsInterests
+                    .Where(pi => pi.PersonId == id)
+                    .Select(pi => new InterestDto
+                    {
+                        Id = pi.Interest.Id,
+                        Title = pi.Interest.Title,
+                        Description = pi.Interest.Description
+                    })
+                    .ToListAsync();                  
+
+                return Results.Ok(personInterests);
             });
 
             app.Run();
